@@ -15,3 +15,15 @@
 ​	载体：网页，前端react或vue
 
 ​	暂时没有找到近似的参考
+
+##### 1956209 趙 敏行
+​	主要功能：物理&数学公式查询
+
+​	载体：网页
+
+​	参考样例：1.https://wakariyasui.sakura.ne.jp/a/kousiki.html
+           2.https://physnotes.jp/math/math-coll/
+           
+
+
+
