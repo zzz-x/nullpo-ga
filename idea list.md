@@ -24,6 +24,11 @@
 ​	参考样例：1.https://wakariyasui.sakura.ne.jp/a/kousiki.html
            2.https://physnotes.jp/math/math-coll/
            
+##### 2051493 张勋
+​          主要功能：类似查找手机的定位追踪，可以实现3D路径绘制等
 
+​          载体：网页，前端vue,地图方面可以调用百度的API
+
+​          参考样例：https://finder.flyme.cn/browser/findphone.jsp
 
 
