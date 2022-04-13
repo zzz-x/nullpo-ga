@@ -47,5 +47,5 @@ def init_db0(init_db):
 
 
 if __name__ == '__main__':
-    init_db0()
+    # init_db0()
     app.run(debug=True)

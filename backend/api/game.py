@@ -1,5 +1,5 @@
 from flask import current_app, jsonify, session
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, request
 import sys
 
 sys.path.append("..")
@@ -9,14 +9,17 @@ from flask_login import login_required
 
 class GetGame(Resource):
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('game_id', type=int, required=True)
-        args = parser.parse_args()
-        game_id = args['game_id']
+        # lcoalhost:5000/api/game?game_id=1
+        # get url
+        game_id = request.args.get('game_id')
         game = find_game_by_id(game_id)
+
+        # print(game_id)
         if game is None:
             return {'message': 'Game not found'}, 404
-        return jsonify(game)
+        res = []
+        res.append(game.to_json())
+        return jsonify(res)
 
 
 class UploadGame(Resource):
@@ -57,4 +60,8 @@ class Comment(Resource):
 class GetAllGames(Resource):
     def get(self):
         games = getAllGames()
-        return jsonify(games)
+        # jsonify
+        res = []
+        for game in games:
+            res.append(game.to_json())
+        return jsonify(res)
