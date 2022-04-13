@@ -29,6 +29,24 @@ class game_info(db.Model):
     game_collect_num = db.Column(db.Integer)
     game_comments_num = db.Column(db.Integer)
 
+    def to_json(self):
+        return {
+            'id': self.game_id,
+            'title': self.game_title,
+            'type_name': self.game_type_name,
+            'average_score': self.game_average_score,
+            'intro': self.game_intro,
+            'develop_company': self.game_develop_company,
+            'release_time': {
+                'year': self.game_release_time.year,
+                'month': self.game_release_time.month,
+                'day': self.game_release_time.day,
+            },
+            'update_time': self.game_update_time,
+            'collect_num': self.game_collect_num,
+            'comments_num': self.game_comments_num,
+        }
+
     def __repr__(self):
         return '<game: %r>' % self.game_title
 

@@ -18,7 +18,7 @@ from flask_restful import Api
 from .account import Account
 from .index import Index
 from .auth import SignIn, LogOut, register
-from .game import GetGame, Rate, Comment, UploadGame
+from .game import GetGame, Rate, Comment, UploadGame, GetAllGames
 
 api_blueprint = Blueprint('api', __name__)
 api = Api(api_blueprint)
@@ -29,3 +29,6 @@ api.add_resource(LogOut, '/api/signout')
 api.add_resource(register, '/api/register')
 api.add_resource(Account, '/api/get-account')
 api.add_resource(GetGame, '/api/get-game')
+api.add_resource(GetAllGames, '/api/get-all-games')
+api.add_resource(Rate, '/api/rate')
+api.add_resource(Comment, '/api/comment')

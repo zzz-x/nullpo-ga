@@ -1,29 +1,31 @@
 import logo from './logo.svg';
-import React,{Component} from "react";
+import React, {Component} from "react";
+import {Switch, Route} from "react-router-dom"
 import './App.css';
+import GameListBox from "./main/GameListBox";
+import GameBox from "./main/GameBox";
 
 class App extends Component {
+    renderMain() {
+        return (
+            <Switch>
+                <Route exact path="/">
+                    <GameListBox/>
+                </Route>
+                <Route path="/game/:id">
+                    <GameBox/>
+                </Route>
+            </Switch>
+        )
+    }
 
-  render(){
-    return(
-        <div className="App">
-      <header className="App-header">
-        <img src={require("../src/76596260_p0.png")} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-    );
-  }
+    render() {
+        return (
+            <div className="App">
+                {this.renderMain()}
+            </div>
+        );
+    }
 }
 
 export default App;
