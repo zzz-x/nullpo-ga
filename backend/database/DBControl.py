@@ -1,8 +1,6 @@
 # 文件名:db.py
 # 功能：数据库操作
 # 功能函数包括：初始化数据库，插入数据，查询数据，更新数据，删除数据，关闭数据库,按照评分排序
-import click
-from flask import Flask, render_template, Blueprint
 from datetime import datetime
 import os
 from werkzeug.security import check_password_hash

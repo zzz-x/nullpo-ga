@@ -14,7 +14,7 @@
 
 from functools import wraps
 
-from flask import redirect, request, session, jsonify
+from flask import session, jsonify
 
 
 def authz_required(f):
