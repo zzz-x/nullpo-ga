@@ -2,12 +2,21 @@
 
 ### 人机交互大作业
 
-#### 分工(自行选择)：
+#### 运行项目：
 
-- 流程/项目框架
-- 代码
-- 代码
-- 报告/ppt/ppt汇报
+```sh
+# backend
+# ./backend/:
+pip install -r requirements.txt
+flask run
+```
+
+```sh
+# frontend
+# ./web/:
+yarn install
+yarn run start
+```
 
 #### 贡献：
 

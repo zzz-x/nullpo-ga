@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from casdoor import CasdoorSDK
-from flask import current_app, jsonify, session
+from flask import jsonify
 from flask_restful import Resource
 from flask_login import current_user
 

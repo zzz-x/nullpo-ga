@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import jsonify, redirect, current_app, request, session, make_response, render_template
-from flask_restful import Resource, reqparse
-from flask_login import (LoginManager, login_user, logout_user, login_required, current_user, user_logged_out)
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import jsonify, request
+from flask_restful import Resource
+from flask_login import (login_user, logout_user, current_user)
+from werkzeug.security import generate_password_hash
 import sys
 
 sys.path.append("..")

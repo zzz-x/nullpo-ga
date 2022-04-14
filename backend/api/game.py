@@ -1,4 +1,4 @@
-from flask import current_app, jsonify, session
+from flask import jsonify
 from flask_restful import Resource, reqparse, request
 import sys
 
