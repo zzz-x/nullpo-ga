@@ -29,32 +29,20 @@ class game_info(db.Model):
     game_collect_num = db.Column(db.Integer)
     game_comments_num = db.Column(db.Integer)
 
-    def to_json(self):
-        return {
-            'id': self.game_id,
-            'title': self.game_title,
-            'type_name': self.game_type_name,
-            'average_score': self.game_average_score,
-            'intro': self.game_intro,
-            'develop_company': self.game_develop_company,
-            'release_time': {
-                'year': self.game_release_time.year,
-                'month': self.game_release_time.month,
-                'day': self.game_release_time.day,
-            },
-            'update_time': self.game_update_time,
-            'collect_num': self.game_collect_num,
-            'comments_num': self.game_comments_num,
-        }
-
     def __repr__(self):
         return '<game: %r>' % self.game_title
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class game_score(db.Model):
     score_id = db.Column(db.Integer, primary_key=True)
     score_value = db.Column(db.Integer)
     score_game_id = db.Column(db.Integer, db.ForeignKey('game_info.game_id'))
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class game_type(db.Model):
@@ -65,6 +53,9 @@ class game_type(db.Model):
 
     def __repr__(self):
         return '<type: %r>' % self.type_name
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class comment(db.Model):
@@ -78,6 +69,9 @@ class comment(db.Model):
 
     def __repr__(self):
         return '<comment: %r>' % self.comment_contents
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class user_info(UserMixin, db.Model):
@@ -96,3 +90,6 @@ class user_info(UserMixin, db.Model):
 
     def __repr__(self):
         return '<user: %r>' % self.user_name
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

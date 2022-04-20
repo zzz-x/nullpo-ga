@@ -14,3 +14,11 @@ export function getGame(id){
         credentials: "include",
         }).then((res)=>res.json());
 }
+
+export function getComments(id){
+    // alert(`${Setting.ServerUrl}/api/get-comments?game_id=${id}`);
+    return fetch(`${Setting.ServerUrl}/api/game/get-comments?game_id=${id}`,{
+        method: "GET",
+        credentials: "include",
+        }).then((res)=>res.json());
+}
