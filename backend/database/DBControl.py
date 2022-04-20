@@ -110,6 +110,11 @@ def query_user(name=''):
         return None
     return u.id
 
+def quer_user_by_id(id):
+    u = user_info.query.get(id)
+    if (u is None):
+        return None
+    return u
 
 # 插入一个comment
 # parm:game_id,id,contents

@@ -8,38 +8,73 @@ class GameBox extends React.Component {
         this.state = {
             id: props.match.params.id,
             game: [],
+            comments: [],
+            commentUserSet: [],
         }
-
-
     }
 
     componentDidMount() {
         this.GetGame();
+        this.GetComments();
     }
 
     GetGame(event) {
         GameBackend.getGame(this.state.id).then((res) => {
-            this.setState({game: res[0]},
-                () => {
-                    if (event === "refresh") {
-                        return;
-                    }
-                });
+            if(res.status === 'success') {
+                this.setState({
+                    game: res.data[0]
+                })
+            }
         });
     }
 
-    renderGame(game){
-        console.log(game);
+    GetComments(event) {
+        GameBackend.getComments(this.state.id).then((res) => {
+            if (res['status'] === 'success') {
+                this.setState({
+                        comments: res['comments'],
+                        commentUserSet: res['users'],
+                    },
+                    () => {
+                        if (event === "refresh") {
+                            return;
+                        }
+                    });
+            }
+        });
+    }
+
+    renderGame(game) {
         return (
             <div>
-                {game.title}
+                {game.game_title}
+            </div>
+        )
+    }
+
+    renderComments(comments, commentUserSet) {
+        return (
+            <div>
+            {/*    render comments with users*/}
+                {comments.map((comment, index) => {
+                    return (
+                        <div key={index}>
+                            <div>
+                                {commentUserSet[index].user_name}
+                            </div>
+                            <div>
+                                {comment.comment_contents}
+                            </div>
+                        </div>
+                    )
+                })}
             </div>
         )
     }
 
     render() {
-        console.log(this.state.game);
-        if(this.state.game.length == 0){
+        // console.log(this.state.game);
+        if (this.state.game.length === 0) {
             return (
                 <div>
                     Loading...
@@ -48,7 +83,8 @@ class GameBox extends React.Component {
         }
         return (
             <div>
-                {this.state.game.title}
+                {this.renderGame(this.state.game)}
+                {this.renderComments(this.state.comments, this.state.commentUserSet)}
             </div>
         );
     }
