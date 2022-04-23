@@ -5,8 +5,10 @@ from datetime import datetime
 import os
 from werkzeug.security import check_password_hash
 from flask_sqlalchemy import SQLAlchemy
+
 db = SQLAlchemy()
 from .models import game_info, game_score, game_type, user_info, comment
+
 
 # 对game_info,game_type,user_info,comment实现了add,delete,query,update接口
 # 生成测试数据库:cmd下 flask initdb --drop,flask forge
@@ -48,6 +50,8 @@ def query_game(title):
         return None
     return _g.game_id
 
+
+# def query_game_by_limit_and_
 
 # 删除一个game_info
 # parm:game_id
@@ -110,11 +114,13 @@ def query_user(name=''):
         return None
     return u.id
 
+
 def quer_user_by_id(id):
     u = user_info.query.get(id)
     if (u is None):
         return None
     return u
+
 
 # 插入一个comment
 # parm:game_id,id,contents
@@ -421,22 +427,60 @@ def all_list():
     return games
 
 
-def game_type_list(name):
-    gt = game_type.query.filter_by(type_name=name).first()
+def get_games_num():
+    return game_info.query.count()
+
+
+def get_start_and_end_index(total_num, limit, offset):
+    start_index = offset * limit
+    end_index = start_index + limit
+    if start_index > total_num:
+        return 0, 0
+    if end_index > total_num:
+        end_index = total_num
+    return start_index, end_index
+
+
+def get_games(limit, offset):
+    # get all games
+    games = game_info.query.all()
+    games.sort(key=game_cmp)
+    start_index, end_index = get_start_and_end_index(len(games), limit, offset)
+    return games[start_index:end_index]
+
+
+def get_games_by_type(typeName, limit, offset):
+    # 按照种类筛选，并且按照评分排序
+    gt = game_type.query.filter_by(type_name=typeName).first()
     games = gt.games
     games.sort(key=game_cmp)
+
+    start_index, end_index = get_start_and_end_index(len(games), limit, offset)
+    return games[start_index:end_index]
+
+
+def get_games_by_year(begin_year, end_year, limit, offset):
+    # 按照年份筛选，并且按照评分排序
+    games = game_info.query.all()
+    games.sort(key=game_cmp)
+    ret = []
+    # 删除不在时间范围内的游戏
+    for game in games:
+        game_release_year = game.game_release_time.year
+        if begin_year <= game_release_year <= end_year:
+            ret.append(game)
+
+    start_index, end_index = get_start_and_end_index(len(ret), limit, offset)
+    return ret[start_index:end_index]
+
+
+def get_games_by_type_and_year(typeName, begin, end, limit, offset):
+    # 按照种类和年份筛选，并且按照评分排序
+    gt = game_type.query.filter_by(type_name=typeName).first()
+    games = gt.games
+    games = games.filter(game_info.game_release_date >= begin, game_info.game_release_date <= end)
+    games.sort(key=game_cmp)
     return games
-
-
-def year_list(year):
-    tmp = game_info.query.all()
-    tmp.sort(key=game_cmp)
-    games = []
-    for g in tmp:
-        if (g.game_release_time.year == year):
-            games.append(g)
-    return games
-
 
 
 def initdb():

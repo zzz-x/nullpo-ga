@@ -26,6 +26,58 @@ class GetGame(Resource):
         return jsonify({'status': 'success', 'data': res})
 
 
+# GetGames
+# args:
+#   limit: n, games per page
+#   page: n, page number
+class GetGames(Resource):
+    def get(self):
+        # localhost:5000/api/get-games?limit=10&offset=1
+        # get url
+        limit = int(request.args.get('limit'))
+        offset = int(request.args.get('offset'))
+        type_name = request.args.get('type_name')
+        start_year = request.args.get('start_year')
+        end_year = request.args.get('end_year')
+
+        games = []
+
+        # limit or offset is None , return none
+        if limit is None or offset is None:
+            return {'message': 'limit or offset is None'}, 400
+
+        # 只有开始年份 则查询该年份以后的所有游戏
+        if start_year is not None and end_year is None:
+            end_year = '9999'
+        # 只有结束年份 则查询该年份以前的所有游戏
+        if start_year is None and end_year is not None:
+            start_year = '1970'
+
+        if start_year is not None:
+            start_year = int(start_year)
+
+        if end_year is not None:
+            end_year = int(end_year)
+
+        if type_name and start_year and end_year:
+            games = get_games_by_type_and_year(type_name, start_year, end_year, limit, offset)
+        elif type_name:
+            games = get_games_by_type(type_name, limit, offset)
+        elif start_year and end_year:
+            games = get_games_by_year(start_year, end_year, limit, offset)
+        else:
+            games = get_games(limit, offset)
+
+        # print(games)
+        if games is None:
+            return {'message': 'Games not found'}, 404
+        res = []
+        for game in games:
+            res.append(game.as_dict())
+
+        return jsonify({'status': 'success', 'data': res})
+
+
 # UpdateGame
 class UploadGame(Resource):
     def post(selfself):
@@ -34,7 +86,7 @@ class UploadGame(Resource):
 
 # Rate
 # args: game_id, score (get agrs from the url↓)
-# url: localhost:5000/api/game/rate?<game_id>&<score>
+# url: localhost:5000/api/game/rate?game_id=<game_id>&score=<score>
 class Rate(Resource):
     @login_required
     def post(self):
