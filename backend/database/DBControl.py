@@ -475,12 +475,15 @@ def get_games_by_year(begin_year, end_year, limit, offset):
 
 
 def get_games_by_type_and_year(typeName, begin, end, limit, offset):
-    # 按照种类和年份筛选，并且按照评分排序
-    gt = game_type.query.filter_by(type_name=typeName).first()
-    games = gt.games
-    games = games.filter(game_info.game_release_date >= begin, game_info.game_release_date <= end)
-    games.sort(key=game_cmp)
-    return games
+    # 先按照年份筛选，再按照种类筛选
+    games = get_games_by_year(begin, end, limit, offset)
+    ret = []
+    for game in games:
+        if game.game_type_name == typeName:
+            ret.append(game)
+
+    start_index, end_index = get_start_and_end_index(len(ret), limit, offset)
+    return ret[start_index:end_index]
 
 
 def initdb():
