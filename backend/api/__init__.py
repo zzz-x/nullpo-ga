@@ -18,7 +18,7 @@ from flask_restful import Api
 from .account import GetAccount
 from .index import Index
 from .auth import SignIn, LogOut, Register
-from .game import GetGame, Rate, AddComment, UploadGame, GetAllGames, GetCommentByGameID, GetGames
+from .game import GetGame, Rate, AddComment, UploadGame, GetAllGames, GetCommentByGameID, GetGames, GetCommentByUserID
 
 api_blueprint = Blueprint('api', __name__)
 api = Api(api_blueprint)
@@ -59,11 +59,14 @@ api.add_resource(GetAllGames, '/api/get-all-games')
 # /api/game/rate?game_id=1&rate=5
 api.add_resource(Rate, '/api/game/rate')
 # 请求格式：
-# /api/game/comment
+# /api/game/add-comment
 # body: [form-data]
 # game_id: int
 # comment: str
 api.add_resource(AddComment, '/api/game/add-comment')
 # 请求格式：
-# /api/game/comment?game_id=1
-api.add_resource(GetCommentByGameID, '/api/game/get-comments')
+# /api/game/get-comments-by-game_id?game_id=1
+api.add_resource(GetCommentByGameID, '/api/game/get-comments-by-game_id')
+# 请求格式：
+# /api/game/get-comments-by-user_id?user_id=1
+api.add_resource(GetCommentByUserID, '/api/game/get-comments-by-user_id')

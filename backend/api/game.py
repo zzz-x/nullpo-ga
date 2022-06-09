@@ -4,7 +4,7 @@ import sys
 
 sys.path.append("..")
 from backend.database.DBControl import *
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 
 # GetGame
@@ -110,14 +110,15 @@ class AddComment(Resource):
         game_id = request.form['game_id']
         comment_content = request.form['comment']
         if game_id and comment_content:
-            add_comment(game_id, comment_content)
+            user_id = current_user.id
+            add_comment(game_id, user_id, comment_content)
             game = find_game_by_id(game_id)
             return jsonify({'status': 'success', 'game_average_score': game.game_average_score})
 
 
 # GetCommentByGameId
 # args: game_id (get args from the url↓)
-# url: localhost:5000/api/game/get-comments?game_id=<game_id>
+# url: localhost:5000/api/game/get-comments-by-game_id?game_id=<game_id>
 class GetCommentByGameID(Resource):
     def get(self):
         game_id = request.args.get('game_id')
@@ -135,6 +136,22 @@ class GetCommentByGameID(Resource):
             user_res.append(user.as_dict())
 
         return jsonify({"status": "success", "comments": comment_res, "users": user_res})
+
+
+# GetCommentByUserId
+# args: user_id (get args from the url↓)
+# url: localhost:5000/api/game/get-comments-by-user_id?user_id=<user_id>
+class GetCommentByUserID(Resource):
+    def get(self):
+        user_id = request.args.get('user_id')
+        comments = query_comment_by_user_id(user_id)
+        if comments is None:
+            return {'message': 'Game not found'}, 404
+        comment_res = []
+        for comment in comments:
+            comment_res.append(comment.as_dict())
+
+        return jsonify({"status": "success", "comments": comment_res})
 
 
 class GetAllGames(Resource):
