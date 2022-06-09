@@ -15,12 +15,13 @@
 from functools import wraps
 
 from flask import session, jsonify
+from flask_login import current_user
 
 
 def authz_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if 'casdoorUser' in session.keys():
+        if current_user._get_current_object():
             return f(*args, **kwargs)
         else:
             return jsonify({'status': 'error'})

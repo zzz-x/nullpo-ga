@@ -15,9 +15,9 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from .account import Account
+from .account import GetAccount
 from .index import Index
-from .auth import SignIn, LogOut, register
+from .auth import SignIn, LogOut, Register
 from .game import GetGame, Rate, AddComment, UploadGame, GetAllGames, GetCommentByGameID, GetGames
 
 api_blueprint = Blueprint('api', __name__)
@@ -38,10 +38,10 @@ api.add_resource(LogOut, '/api/signout')
 # body: [form-data]
 # username: str
 # password: str
-api.add_resource(register, '/api/register')
+api.add_resource(Register, '/api/register')
 # 请求格式：
-# /api/account
-api.add_resource(Account, '/api/get-account')
+# /api/get-account
+api.add_resource(GetAccount, '/api/get-account')
 # 请求格式：
 # /api/get-game?game_id=1
 api.add_resource(GetGame, '/api/get-game')

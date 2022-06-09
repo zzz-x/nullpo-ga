@@ -317,9 +317,9 @@ def add_new_user(name, passw):
         u = user_info(user_name=name, user_password=passw)
         db.session.add(u)
         db.session.commit()
-        if not os.path.exists(".\\apps\\static\\userMaterialStock\\" + str(u.id)):
+        if not os.path.exists("../web/src/static/userMaterialStock/" + str(u.id)):
             print("makdir")
-            os.mkdir(".\\apps\\static\\userMaterialStock\\" + str(u.id))
+            os.mkdir("../web/src/static/userMaterialStock/" + str(u.id))
         else:
             print("no")
         return u.id

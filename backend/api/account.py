@@ -14,15 +14,12 @@
 
 from flask import jsonify
 from flask_restful import Resource
-from flask_login import current_user
-
-from .utils import authz_required
+from flask_login import current_user,login_required
 
 
-class Account(Resource):
-
-    @authz_required
+class GetAccount(Resource):
+    @login_required
     def get(self):
-        return jsonify({"status": "success", "data": current_user.to_dict()})
+        return jsonify({"status": "success", "data": current_user.as_dict()})
 
 

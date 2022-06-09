@@ -117,7 +117,7 @@ class AddComment(Resource):
 
 # GetCommentByGameId
 # args: game_id (get args from the url↓)
-# url: localhost:5000/api/game/get-comment?game_id=<game_id>
+# url: localhost:5000/api/game/get-comments?game_id=<game_id>
 class GetCommentByGameID(Resource):
     def get(self):
         game_id = request.args.get('game_id')

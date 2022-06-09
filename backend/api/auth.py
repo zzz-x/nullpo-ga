@@ -21,7 +21,7 @@ import sys
 sys.path.append("..")
 from backend.database.DBControl import *
 
-from .utils import authz_required
+from flask_login import login_required
 
 
 class SignIn(Resource):
@@ -30,36 +30,36 @@ class SignIn(Resource):
         password = request.form.get('password')
 
         if username is None or password is None:
-            return jsonify({"error": "Missing username or password"}), 400
+            return {"status": "fail", "message": "Missing username or password"}, 400
         user = check_username_password(username, password)
 
         if user == 'cantfind':
-            return jsonify({"error": "Wrong username or password"}), 400
+            return {"status": "fail", "message": "Wrong username or password"}, 400
         elif user == 'passwordincorrect':
-            return jsonify({"error": "Wrong username or password"}), 400
+            return {"fail": "Wrong username or password"}, 400
         else:
             login_user(find_user(user))
-            return jsonify({"success": "Login successful"}), 200
+            return {"status": "success", "message": "Login successful"}, 200
 
 
 class LogOut(Resource):
-    @authz_required
+    @login_required
     def post(self):
         logout_user()
-        return jsonify({"success": "Logout successful"}), 200
+        return {"status": "success", "message": "Logout successful"}, 200
 
 
-class register(Resource):
+class Register(Resource):
     def post(self):
         # if user is login then return error
         if current_user.is_authenticated:
-            return jsonify({"error": "User is already logged in"}), 400
+            return {"status": "fail", "message": "User is already logged in"}, 400
         username = request.form.get('username')
         password = request.form.get('password')
         user = check_username_password(username, password)
         password = generate_password_hash(password)
         if user == 'cantfind':
             add_new_user(username, password)
-            return jsonify({"success": "Registration successful"}), 200
+            return {"status": "success", "message": "Registration successful"}, 200
         else:
-            return jsonify({"error": "Username already exists"}), 400
+            return {"status": "fail", "message": "Username already exists"}, 400
