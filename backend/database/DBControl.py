@@ -271,11 +271,18 @@ def get_item_value(id, table_name, table_word):
     return 'no match'
 
 
-def find_user(id):
-    u = user_info.query.get(id)
-    if (u is None):
-        return 'fail'
-    return u
+def find_user_by_id(user_id):
+    user = user_info.query.filter_by(id=user_id).first()
+    if user:
+        return user
+    return None
+
+
+def find_user_by_name(username):
+    user = user_info.query.filter_by(user_name=username).first()
+    if user:
+        return user
+    return None
 
 
 # 删除一个user_info
@@ -317,9 +324,9 @@ def add_new_user(name, passw):
         u = user_info(user_name=name, user_password=passw)
         db.session.add(u)
         db.session.commit()
-        if not os.path.exists("../web/src/static/userMaterialStock/" + str(u.id)):
+        if not os.path.exists("../web/static/userMaterialStock/" + str(u.id)):
             print("makdir")
-            os.mkdir("../web/src/static/userMaterialStock/" + str(u.id))
+            os.mkdir("../web/static/userMaterialStock/" + str(u.id))
         else:
             print("no")
         return u.id
@@ -337,11 +344,16 @@ def collect_game(user_id, game_id):
     db.session.commit()
 
 
-def incollect_game(user_id, game_id):
+def uncollect_game(user_id, game_id):
     game = game_info.query.get(game_id)
     user = user_info.query.get(user_id)
-    user.collects.remove(game)
-    db.session.commit()
+    # check if the game is in the user's collect list
+    if is_collect(user_id, game_id):
+        user.collects.remove(game)
+        db.session.commit()
+        return 'success'
+    return 'fail'
+
 
 
 def is_collect(user_id, game_id):
@@ -484,6 +496,12 @@ def get_games_by_type_and_year(typeName, begin, end, limit, offset):
 
     start_index, end_index = get_start_and_end_index(len(ret), limit, offset)
     return ret[start_index:end_index]
+
+def search_game(keyword):
+    # 模糊搜索游戏
+    games = game_info.query.filter(game_info.game_title.like('%' + keyword + '%')).all()
+    print(games)
+    return games
 
 
 def initdb():

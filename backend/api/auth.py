@@ -14,14 +14,12 @@
 
 from flask import jsonify, request
 from flask_restful import Resource
-from flask_login import (login_user, logout_user, current_user)
+from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash
 import sys
 
 sys.path.append("..")
 from backend.database.DBControl import *
-
-from flask_login import login_required
 
 
 class SignIn(Resource):
@@ -38,7 +36,7 @@ class SignIn(Resource):
         elif user == 'passwordincorrect':
             return {"fail": "Wrong username or password"}, 400
         else:
-            login_user(find_user(user))
+            login_user(find_user_by_name(username))
             return {"status": "success", "message": "Login successful"}, 200
 
 

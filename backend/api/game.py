@@ -1,10 +1,10 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse, request
+from flask_login import current_user, login_required
 import sys
 
 sys.path.append("..")
 from backend.database.DBControl import *
-from flask_login import login_required, current_user
 
 
 # GetGame
@@ -20,8 +20,7 @@ class GetGame(Resource):
         # print(game_id)
         if game is None:
             return {'message': 'Game not found'}, 404
-        res = []
-        res.append(game.as_dict())
+        res = [game.as_dict()]
 
         return jsonify({'status': 'success', 'data': res})
 
@@ -107,6 +106,7 @@ class Rate(Resource):
 class AddComment(Resource):
     @login_required
     def post(self):
+        print(current_user.id)
         game_id = request.form['game_id']
         comment_content = request.form['comment']
         if game_id and comment_content:
@@ -162,3 +162,86 @@ class GetAllGames(Resource):
         for game in games:
             res.append(game.as_dict())
         return jsonify(res)
+
+# SearchGame
+# args: keyword (get args from the url↓)
+# url: localhost:5000/api/game/search?keyword=<keyword>
+class SearchGame(Resource):
+    def get(self):
+        keyword = request.args.get('keyword')
+        if keyword is None:
+            return {'message': 'keyword is None'}, 400
+        games = search_game(keyword)
+        if games is None:
+            return {'message': 'Game not found'}, 404
+        res = []
+        for game in games:
+            res.append(game.as_dict())
+
+        return jsonify({'status': 'success', 'data': res})
+
+#  CollectGame
+# args: game_id (get args from the url↓)
+# url: localhost:5000/api/game/collect?game_id=<game_id>
+class CollectGame(Resource):
+    @login_required
+    def post(self):
+        game_id = request.args.get('game_id')
+        if game_id:
+            user_id = current_user.id
+            collect_game(user_id, game_id)
+            return jsonify({'status': 'success'})
+        else:
+            return {'message': 'game_id is None'}, 400
+
+# UncollectGame
+# args: game_id (get args from the url↓)
+# url: localhost:5000/api/game/uncollect?game_id=<game_id>
+class UncollectedGame(Resource):
+    @login_required
+    def post(self):
+        game_id = request.args.get('game_id')
+        if game_id:
+            user_id = current_user.id
+            uncollect_game(user_id, game_id)
+            return jsonify({'status': 'success'})
+        else:
+            return {'message': 'game_id is None'}, 400
+
+# GetCollectedGames
+# args: user_id (get args from the url↓)
+# url: localhost:5000/api/game/get-collected-games?user_id=<user_id>
+class GetCollectedGames(Resource):
+    def get(self):
+        user_id = request.args.get('user_id')
+        if user_id is None:
+            user_id = current_user.id
+            if user_id is None:
+                return {'message': 'user_id is None'}, 400
+            else:
+                games = collect_list(user_id)
+        else:
+            games = collect_list(user_id)
+
+        if games is None:
+            return {'message': 'Game not found'}, 404
+        res = []
+        for game in games:
+            res.append(game.as_dict())
+
+        return jsonify({'status': 'success', 'data': res})
+
+# IsCollected
+# args: game_id (get args from the url↓)
+# url: localhost:5000/api/game/is-collected?game_id=<game_id>
+class IsCollected(Resource):
+    def get(self):
+        game_id = request.args.get('game_id')
+        if game_id is None:
+            return {'message': 'game_id is None'}, 400
+        user_id = current_user.id
+        if is_collect(user_id, game_id):
+            return jsonify({'status': 'success', 'is_collected': True})
+        else:
+            return jsonify({'status': 'success', 'is_collected': False})
+
