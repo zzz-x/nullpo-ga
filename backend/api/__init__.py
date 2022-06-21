@@ -18,12 +18,11 @@ from flask_restful import Api
 from .account import GetAccount
 from .index import Index
 from .auth import SignIn, LogOut, Register
-from .game import GetGame, Rate, AddComment, UploadGame, GetAllGames, GetCommentByGameID, GetGames, GetCommentByUserID
+from .game import GetGame, Rate, AddComment, UploadGame, GetAllGames, GetCommentByGameID, GetGames, GetCommentByUserID, SearchGame, CollectGame, UncollectedGame, GetCollectedGames, IsCollected
 
 api_blueprint = Blueprint('api', __name__)
 api = Api(api_blueprint)
 
-api.add_resource(Index, '/')
 # 请求格式：
 # /api/signin
 # body: [form-data]
@@ -50,7 +49,7 @@ api.add_resource(GetGame, '/api/get-game')
 # limt: int, 每页显示的数量
 # offset: int, 页码
 # limit,offset必选，start_year,end_year,type_name可选
-#例如每页十条游戏，则要获取第二页，参数为：limit=10&offset=1
+# 例如每页十条游戏，则要获取第二页，参数为：limit=10&offset=1
 api.add_resource(GetGames, '/api/get-games')
 # 请求格式：
 # /api/get-all-games
@@ -70,3 +69,29 @@ api.add_resource(GetCommentByGameID, '/api/game/get-comments-by-game_id')
 # 请求格式：
 # /api/game/get-comments-by-user_id?user_id=1
 api.add_resource(GetCommentByUserID, '/api/game/get-comments-by-user_id')
+# 搜索游戏
+# 请求格式：
+# /api/game/search?keyword=
+# keyword: str
+api.add_resource(SearchGame, '/api/game/search')
+# 当前用户收藏游戏
+# 请求格式：
+# /api/game/collect?game_id=1
+# game_id: int
+api.add_resource(CollectGame, '/api/game/collect')
+# 当前用户取消收藏游戏
+# 请求格式：
+# /api/game/uncollected?game_id=1
+# game_id: int
+api.add_resource(UncollectedGame, '/api/game/uncollected')
+# 查询当前用户对某个游戏收藏状态
+# 请求格式：
+# /api/game/is-collected?game_id=1
+# game_id: int
+api.add_resource(IsCollected, '/api/game/is-collected')
+# 查询一个用户收藏的所有游戏
+# 请求格式：
+# /api/game/get-collected-games?user_id=1 (user_id不存在, 则查询当前登录用户收藏的所有游戏)
+# user_id: int
+api.add_resource(GetCollectedGames, '/api/game/get-collected-games')
+
