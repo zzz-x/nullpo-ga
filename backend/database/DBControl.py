@@ -3,6 +3,7 @@
 # 功能函数包括：初始化数据库，插入数据，查询数据，更新数据，删除数据，关闭数据库,按照评分排序
 from datetime import datetime
 import os
+import random
 from werkzeug.security import check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 
@@ -324,7 +325,7 @@ def add_new_user(name, passw):
         u = user_info(user_name=name, user_password=passw)
         db.session.add(u)
         db.session.commit()
-        path = os.path.abspath('..')+"\\web\\static\\userMaterialStock\\" + str(u.id)
+        path = os.path.abspath('..') + "\\web\\static\\userMaterialStock\\" + str(u.id)
         if not os.path.exists(path):
             print(path)
             os.mkdir(path)
@@ -354,7 +355,6 @@ def uncollect_game(user_id, game_id):
         db.session.commit()
         return 'success'
     return 'fail'
-
 
 
 def is_collect(user_id, game_id):
@@ -472,6 +472,13 @@ def get_games_by_type(typeName, limit, offset):
     return games[start_index:end_index]
 
 
+def get_random_games(num):
+    # get random <num> games
+    games = game_info.query.all()
+    games.sort(key=game_cmp)
+    return random.sample(games, num)
+
+
 def get_games_by_year(begin_year, end_year, limit, offset):
     # 按照年份筛选，并且按照评分排序
     games = game_info.query.all()
@@ -497,6 +504,7 @@ def get_games_by_type_and_year(typeName, begin, end, limit, offset):
 
     start_index, end_index = get_start_and_end_index(len(ret), limit, offset)
     return ret[start_index:end_index]
+
 
 def search_game(keyword):
     # 模糊搜索游戏
