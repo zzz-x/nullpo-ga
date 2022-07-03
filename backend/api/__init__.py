@@ -18,7 +18,8 @@ from flask_restful import Api
 from .account import GetAccount
 from .index import Index
 from .auth import SignIn, LogOut, Register
-from .game import GetGame, Rate, AddComment, UploadGame, GetAllGames, GetCommentByGameID, GetGames, GetCommentByUserID, SearchGame, CollectGame, UncollectedGame, GetCollectedGames, IsCollected
+from .game import GetGame, Rate, AddComment, UploadGame, GetAllGames, GetCommentByGameID, GetGames, GetCommentByUserID, \
+    SearchGame, CollectGame, UncollectedGame, GetCollectedGames, IsCollected, GetRandomGames
 
 api_blueprint = Blueprint('api', __name__)
 api = Api(api_blueprint)
@@ -74,6 +75,11 @@ api.add_resource(GetCommentByUserID, '/api/game/get-comments-by-user_id')
 # /api/game/search?keyword=
 # keyword: str
 api.add_resource(SearchGame, '/api/game/search')
+# 获取<num>个随机游戏
+# 请求格式：
+# /api/game/get-random-games?num=1
+# user_id: int
+api.add_resource(GetRandomGames, '/api/game/get-random-games')
 # 当前用户收藏游戏
 # 请求格式：
 # /api/game/collect?game_id=1
@@ -94,4 +100,3 @@ api.add_resource(IsCollected, '/api/game/is-collected')
 # /api/game/get-collected-games?user_id=1 (user_id不存在, 则查询当前登录用户收藏的所有游戏)
 # user_id: int
 api.add_resource(GetCollectedGames, '/api/game/get-collected-games')
-

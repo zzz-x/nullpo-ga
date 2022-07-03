@@ -180,6 +180,7 @@ class SearchGame(Resource):
 
         return jsonify({'status': 'success', 'data': res})
 
+
 #  CollectGame
 # args: game_id (get args from the url↓)
 # url: localhost:5000/api/game/collect?game_id=<game_id>
@@ -194,6 +195,7 @@ class CollectGame(Resource):
         else:
             return {'message': 'game_id is None'}, 400
 
+
 # UncollectGame
 # args: game_id (get args from the url↓)
 # url: localhost:5000/api/game/uncollect?game_id=<game_id>
@@ -207,6 +209,7 @@ class UncollectedGame(Resource):
             return jsonify({'status': 'success'})
         else:
             return {'message': 'game_id is None'}, 400
+
 
 # GetCollectedGames
 # args: user_id (get args from the url↓)
@@ -231,6 +234,7 @@ class GetCollectedGames(Resource):
 
         return jsonify({'status': 'success', 'data': res})
 
+
 # IsCollected
 # args: game_id (get args from the url↓)
 # url: localhost:5000/api/game/is-collected?game_id=<game_id>
@@ -245,3 +249,20 @@ class IsCollected(Resource):
         else:
             return jsonify({'status': 'success', 'is_collected': False})
 
+
+# GetRandomGames
+# args: num
+# url: localhost:5000/api/game/get-random-games?num=<num>
+class GetRandomGames(Resource):
+    def get(self):
+        num = request.args.get('num')
+        if num is None:
+            return {'message': 'num is None'}, 400
+        games = get_random_games(int(num))
+        if games is None:
+            return {'message': 'Game not found'}, 404
+        res = []
+        for game in games:
+            res.append(game.as_dict())
+
+        return jsonify({'status': 'success', 'data': res})
